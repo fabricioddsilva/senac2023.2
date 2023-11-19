@@ -1,10 +1,33 @@
-const express = require("express")
+//Config Inicial
+const express = require ('express');
+const mongoose = require ('mongoose')
+const app = express();
 
-const server = express()
+//Metodo para ler JSON
+app.use(
+    express.urlencoded({
+        extended: true
+    })
+)
 
-server.get('/usuario', (request,response) => {
-    return response.send("Teste")
+app.use(express.json())
+
+//Rotas
+const personRoutes = require('./routes/personRoutes')
+
+app.use('/person', personRoutes)
+
+//Rota Inicial
+app.get('/', (req,res) => {
+    
+    res.json({msg: 'Ola!'})
 })
 
-server.listen(3000)
+//Conexão
+mongoose.connect('mongodb+srv://fabricio:YcNJWOkAvgxDjOSs@cluster0.5seesso.mongodb.net/?retryWrites=true&w=majority')
+.then(() => {
+    console.log('MongoDB Conectado')
+    app.listen(3000) 
+})
+.catch((err) => console.log(err))
 
